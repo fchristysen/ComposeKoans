@@ -31,6 +31,7 @@ val Green200 = Color(0xFFA5D6A7)
 
 val textPrimary = Color(0xFF2D2D2D)
 val textSecondary = Color(0xFF81868D)
+val divider = Color(0x8881868D)
 
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,

@@ -5,13 +5,18 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -61,20 +66,29 @@ private fun Screen(modifier: Modifier = Modifier, viewModel: ISJSearchVM = viewM
 @Composable
 private fun BookList(modifier: Modifier = Modifier, books: List<Book>) {
     LazyColumn(modifier = modifier) {
-        items(books) { book ->
+        itemsIndexed(books) { index, book ->
+            if (index !=0) {
+                Divider(
+                    modifier = Modifier.padding(horizontal = 32.dp),
+                    color = divider,
+                    thickness = 1.dp
+                )
+            }
             BookListItem(book = book)
         }
     }
 }
 
-@Preview()
+@Preview(showBackground = true)
 @Composable
 private fun BookListItem(
+    @PreviewParameter(PPBook::class) book: Book,
     modifier: Modifier = Modifier,
-    @PreviewParameter(PPBook::class) book: Book
 ) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 24.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
@@ -91,6 +105,7 @@ private fun BookListItem(
                 .clip(RoundedCornerShape(16.dp))
 
         )
+        Spacer(modifier = Modifier.width(8.dp))
         Column(modifier = Modifier) {
             Text(
                 text = book.title,
@@ -106,7 +121,7 @@ private fun BookListItem(
     }
 }
 
-private class PPBook: PreviewParameterProvider<Book> {
+class PPBook: PreviewParameterProvider<Book> {
     override val values = sequenceOf(
         Book(
             cover = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1684638853i/2429135.jpg",
