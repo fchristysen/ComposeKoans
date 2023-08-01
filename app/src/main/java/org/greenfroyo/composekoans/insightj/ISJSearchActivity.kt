@@ -3,6 +3,7 @@ package org.greenfroyo.composekoans.insightj
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,15 +18,20 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -43,31 +49,74 @@ class ISJSearchActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            Screen()
+            screen()
         }
     }
 }
 
+
+@Composable
+private fun screen(viewModel: ISJSearchVM = viewModel(), modifier: Modifier = Modifier) {
+    val state by viewModel.state.collectAsState()
+    _screen(state = state,
+        onKeywordChanged = {newValue -> viewModel.setKeyword(newValue)},
+        modifier = modifier
+    )
+}
+
 @Preview(showBackground = true)
 @Composable
-private fun Screen(modifier: Modifier = Modifier, viewModel: ISJSearchVM = viewModel()) {
-    val state by viewModel.state.collectAsState()
+private fun _screen(
+    @PreviewParameter(PPScreen::class) state: ISJSearchState = ISJSearchState(),
+    onKeywordChanged: (text: String) -> Unit = { },
+    modifier: Modifier = Modifier
+){
     InsightJTheme {
         // A surface container using the 'background' color from the theme
         Surface(
             modifier = Modifier.fillMaxSize(),
             color = MaterialTheme.colorScheme.background
         ) {
-            BookList(books = state.books)
+            Column {
+                SearchBar(searchKeywords = state.searchKeywords,
+                    onKeywordChanged = onKeywordChanged,
+                    modifier = Modifier.fillMaxWidth())
+                BookList(books = state.books)
+            }
         }
     }
 }
 
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun BookList(modifier: Modifier = Modifier, books: List<Book>) {
+private fun SearchBar(searchKeywords: String = "",
+                      onKeywordChanged: (text: String) -> Unit = { },
+                      modifier: Modifier = Modifier) {
+    Row(modifier = modifier.padding(24.dp).fillMaxWidth()) {
+        TextField(
+            value = searchKeywords,
+            onValueChange = onKeywordChanged,
+            leadingIcon = { Image(painter = painterResource(
+                id = R.drawable.ic_search_24),
+                contentDescription = "Search Icon",
+                colorFilter = ColorFilter.tint(textPrimary)
+            )},
+            colors = TextFieldDefaults.textFieldColors(
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+            ),
+            shape = RoundedCornerShape(16.dp),
+            modifier = Modifier.fillMaxWidth()
+        )
+    }
+}
+
+@Composable
+private fun BookList(books: List<Book>, modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         itemsIndexed(books) { index, book ->
-            if (index !=0) {
+            if (index != 0) {
                 Divider(
                     modifier = Modifier.padding(horizontal = 32.dp),
                     color = divider,
@@ -79,10 +128,9 @@ private fun BookList(modifier: Modifier = Modifier, books: List<Book>) {
     }
 }
 
-@Preview(showBackground = true)
 @Composable
 private fun BookListItem(
-    @PreviewParameter(PPBook::class) book: Book,
+    book: Book,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -121,12 +169,29 @@ private fun BookListItem(
     }
 }
 
-class PPBook: PreviewParameterProvider<Book> {
-    override val values = sequenceOf(
+class PPScreen : PreviewParameterProvider<ISJSearchState> {
+    val books = listOf(
+        Book(
+           cover = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1684638853i/2429135.jpg",
+           title = "The Girl with the Dragon Tattoo",
+            author = "Stieg Larsson",
+        ),
         Book(
             cover = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1684638853i/2429135.jpg",
             title = "The Girl with the Dragon Tattoo",
             author = "Stieg Larsson",
+        ),
+        Book(
+            cover = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1684638853i/2429135.jpg",
+            title = "The Girl with the Dragon Tattoo",
+            author = "Stieg Larsson",
+        ),
+    )
+
+    override val values = sequenceOf(
+        ISJSearchState(
+            searchKeywords = "Tatoo",
+            books = books
         ),
     )
 }

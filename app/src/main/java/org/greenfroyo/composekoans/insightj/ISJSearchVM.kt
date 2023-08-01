@@ -16,6 +16,11 @@ class ISJSearchVM(val repository: ISJRepository = ISJRepository()) : ViewModel()
         getBooks()
     }
 
+    fun setKeyword(newValue: String) {
+        _state.update {
+            it.copy(searchKeywords = newValue)
+        }
+    }
 
     fun getBooks(){
         viewModelScope.launch {
