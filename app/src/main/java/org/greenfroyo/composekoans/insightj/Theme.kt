@@ -20,56 +20,47 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.core.view.WindowCompat
-
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
+import org.greenfroyo.composekoans.ui.theme.ColorDL
 
 val Cream = Color(0xFFFDFCF8)
-val Grey = Color(0xFFEDECE8)
-val Green200 = Color(0xFFA5D6A7)
 
-val textPrimary = Color(0xFF2D2D2D)
-val textSecondary = Color(0xFF81868D)
+val textPrimary = ColorDL(
+    Color(0xFFD2D2D2),
+    Color(0xFF2D2D2D)
+)
+val textSecondary = ColorDL(
+    Color(0xFF7E7972),
+    Color(0xFF81868D),
+)
 val divider = Color(0x8881868D)
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
-    background = Cream,
+    primary = Color(0xFFE6DDC4),
+    secondary = Color(0xFF678983),
+    tertiary = Color(0xFFF0E9D2),
+    background = Color(0xFF393646),
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80,
+    primary = Color(0xFF565657),
+    secondary = Color(0xFFF4EEE0),
+    tertiary = Color(0xFF696369),
     background = Cream,
-
-
-    /* Other default colors to override
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
 )
 
-val Typography = Typography(
+fun typography(darkTheme: Boolean) = Typography(
     headlineMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.SemiBold,
         fontSize = 16.sp,
-        color = textPrimary,
+        color = if(darkTheme) textPrimary.darkColor else textPrimary.lightColor,
         letterSpacing = 0.5.sp
     ),
     bodyMedium = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
-        color = textSecondary,
+        color = if(darkTheme) textSecondary.darkColor else textSecondary.lightColor,
         letterSpacing = 0.5.sp
     ),
 
@@ -103,6 +94,6 @@ fun InsightJTheme(
     MaterialTheme(
         colorScheme = colorScheme,
         content = content,
-        typography = Typography,
+        typography = typography(darkTheme),
     )
 }

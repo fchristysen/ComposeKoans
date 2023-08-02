@@ -10,11 +10,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.paddingFrom
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
@@ -32,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -67,7 +66,7 @@ private fun screen(viewModel: ISJSearchVM = viewModel(), modifier: Modifier = Mo
 @Preview(showBackground = true)
 @Composable
 private fun _screen(
-    @PreviewParameter(PPScreen::class) state: ISJSearchState = ISJSearchState(),
+    @PreviewParameter(PPScreen::class) state: ISJSearchState,
     onKeywordChanged: (text: String) -> Unit = { },
     modifier: Modifier = Modifier
 ){
@@ -81,7 +80,7 @@ private fun _screen(
                 SearchBar(searchKeywords = state.searchKeywords,
                     onKeywordChanged = onKeywordChanged,
                     modifier = Modifier.fillMaxWidth())
-                BookList(books = state.books)
+                BookList(books = state.getFilteredBooks())
             }
         }
     }
@@ -100,7 +99,7 @@ private fun SearchBar(searchKeywords: String = "",
             leadingIcon = { Image(painter = painterResource(
                 id = R.drawable.ic_search_24),
                 contentDescription = "Search Icon",
-                colorFilter = ColorFilter.tint(textPrimary)
+                colorFilter = ColorFilter.tint(Color(0xFF222222))
             )},
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
@@ -113,7 +112,7 @@ private fun SearchBar(searchKeywords: String = "",
 }
 
 @Composable
-private fun BookList(books: List<Book>, modifier: Modifier = Modifier) {
+private fun BookList(books: List<Book> = listOf(), modifier: Modifier = Modifier) {
     LazyColumn(modifier = modifier) {
         itemsIndexed(books) { index, book ->
             if (index != 0) {
@@ -134,7 +133,7 @@ private fun BookListItem(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 24.dp, vertical = 16.dp),
         verticalAlignment = Alignment.CenterVertically
@@ -150,7 +149,8 @@ private fun BookListItem(
             modifier = Modifier
                 .padding(8.dp)
                 .size(82.dp)
-                .clip(RoundedCornerShape(16.dp))
+                .clip(RoundedCornerShape(16.dp)),
+            colorFilter = ColorFilter.colorMatrix(ColorMatrix().apply { setToSaturation(0.1f) })
 
         )
         Spacer(modifier = Modifier.width(8.dp))
@@ -170,10 +170,10 @@ private fun BookListItem(
 }
 
 class PPScreen : PreviewParameterProvider<ISJSearchState> {
-    val books = listOf(
+    private val books = listOf(
         Book(
-           cover = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1684638853i/2429135.jpg",
-           title = "The Girl with the Dragon Tattoo",
+            cover = "https://images-na.ssl-images-amazon.com/images/S/compressed.photo.goodreads.com/books/1684638853i/2429135.jpg",
+            title = "The Girl with the Dragon Tattoo",
             author = "Stieg Larsson",
         ),
         Book(
@@ -192,6 +192,6 @@ class PPScreen : PreviewParameterProvider<ISJSearchState> {
         ISJSearchState(
             searchKeywords = "Tatoo",
             books = books
-        ),
+        )
     )
 }

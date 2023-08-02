@@ -1,5 +1,6 @@
 package org.greenfroyo.composekoans.insightj
 
+import androidx.compose.ui.text.toLowerCase
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -22,7 +23,7 @@ class ISJSearchVM(val repository: ISJRepository = ISJRepository()) : ViewModel()
         }
     }
 
-    fun getBooks(){
+    fun getBooks() {
         viewModelScope.launch {
             repository.getBooks().collect { books ->
                 _state.update {
@@ -36,7 +37,10 @@ class ISJSearchVM(val repository: ISJRepository = ISJRepository()) : ViewModel()
 data class ISJSearchState(
     val searchKeywords: String = "",
     val books: List<Book> = emptyList()
-)
+) {
+    fun getFilteredBooks() =
+        books.filter { it -> it.title.toLowerCase().contains(searchKeywords.toLowerCase()) }
+}
 
 
 
