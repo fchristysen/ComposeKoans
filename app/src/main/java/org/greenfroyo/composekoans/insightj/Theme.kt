@@ -32,7 +32,7 @@ val textSecondary = ColorDL(
     Color(0xFF7E7972),
     Color(0xFF81868D),
 )
-val divider = Color(0x8881868D)
+val divider = Color(0xFFD8D6D2)
 
 private val DarkColorScheme = darkColorScheme(
     primary = Color(0xFFE6DDC4),
@@ -45,7 +45,7 @@ private val LightColorScheme = lightColorScheme(
     primary = Color(0xFF565657),
     secondary = Color(0xFFF4EEE0),
     tertiary = Color(0xFF696369),
-    background = Cream,
+    background = Color(0xFFF5F3F0),
 )
 
 fun typography(darkTheme: Boolean) = Typography(

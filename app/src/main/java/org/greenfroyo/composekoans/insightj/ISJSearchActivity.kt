@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -92,19 +93,30 @@ private fun _screen(
 private fun SearchBar(searchKeywords: String = "",
                       onKeywordChanged: (text: String) -> Unit = { },
                       modifier: Modifier = Modifier) {
-    Row(modifier = modifier.padding(24.dp).fillMaxWidth()) {
+    Row(modifier = modifier
+        .padding(24.dp)
+        .fillMaxWidth()) {
         TextField(
             value = searchKeywords,
             onValueChange = onKeywordChanged,
             leadingIcon = { Image(painter = painterResource(
                 id = R.drawable.ic_search_24),
                 contentDescription = "Search Icon",
-                colorFilter = ColorFilter.tint(Color(0xFF222222))
+                colorFilter = ColorFilter.tint(Color(0xFF666462))
             )},
             colors = TextFieldDefaults.textFieldColors(
                 focusedIndicatorColor = Color.Transparent,
                 unfocusedIndicatorColor = Color.Transparent,
+                containerColor = Color(0xFFEAE9E5)
             ),
+            trailingIcon = { Image(painter = painterResource(
+                id = R.drawable.ic_cancel_24),
+                contentDescription = "Clear Text",
+                modifier = Modifier.clickable {
+                    onKeywordChanged("")
+                },
+                colorFilter = ColorFilter.tint(Color(0xFF666462))
+            )},
             shape = RoundedCornerShape(16.dp),
             modifier = Modifier.fillMaxWidth()
         )
